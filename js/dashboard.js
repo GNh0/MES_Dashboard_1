@@ -5,9 +5,9 @@ const Dashboard = (() => {
         attendanceFieldMap: { name: 'GUBUNNM', count: 'CNT', unit: 'UNIT' },
         attendanceItems: [],
         approvalItems: [
-            { title: '미결', count: 0 },
-            { title: '미결', count: 0 },
-            { title: '미결', count: 0 }
+            { title: '미결', count: 0, foot: '결재 대기' },
+            { title: '미결', count: 0, foot: '검토 대기' },
+            { title: '미결', count: 0, foot: '확인 대기' }
         ],
         proposalTargetCount: 0,
         proposalSubmitCount: 0,
@@ -79,9 +79,21 @@ const Dashboard = (() => {
 
     function makeApprovalItems(data) {
         return [
-            { title: data.approvalTitle1 ?? data.ApprovalTitle1 ?? '미결', count: data.approvalCount1 ?? data.ApprovalCount1 ?? 0 },
-            { title: data.approvalTitle2 ?? data.ApprovalTitle2 ?? '미결', count: data.approvalCount2 ?? data.ApprovalCount2 ?? 0 },
-            { title: data.approvalTitle3 ?? data.ApprovalTitle3 ?? '미결', count: data.approvalCount3 ?? data.ApprovalCount3 ?? 0 }
+            {
+                title: data.approvalTitle1 ?? data.ApprovalTitle1 ?? '미결',
+                count: data.approvalCount1 ?? data.ApprovalCount1 ?? 0,
+                foot: data.approvalFoot1 ?? data.ApprovalFoot1 ?? '결재 대기'
+            },
+            {
+                title: data.approvalTitle2 ?? data.ApprovalTitle2 ?? '미결',
+                count: data.approvalCount2 ?? data.ApprovalCount2 ?? 0,
+                foot: data.approvalFoot2 ?? data.ApprovalFoot2 ?? '검토 대기'
+            },
+            {
+                title: data.approvalTitle3 ?? data.ApprovalTitle3 ?? '미결',
+                count: data.approvalCount3 ?? data.ApprovalCount3 ?? 0,
+                foot: data.approvalFoot3 ?? data.ApprovalFoot3 ?? '확인 대기'
+            }
         ];
     }
 
@@ -133,9 +145,12 @@ const Dashboard = (() => {
 
     function renderApproval(items) {
         for (let i = 0; i < 3; i++) {
-            const item = items[i] || { title: '미결', count: 0 };
-            setText('approvalTitle' + (i + 1), item.title ?? item.Title ?? '미결');
-            setText('approvalCount' + (i + 1), item.count ?? item.Count ?? 0);
+            const defaultItem = defaultData.approvalItems[i] || { title: '미결', count: 0, foot: '' };
+            const item = items[i] || defaultItem;
+
+            setText('approvalTitle' + (i + 1), item.title ?? item.Title ?? defaultItem.title);
+            setText('approvalCount' + (i + 1), item.count ?? item.Count ?? defaultItem.count);
+            setText('approvalFoot' + (i + 1), item.foot ?? item.Foot ?? item.footer ?? item.Footer ?? defaultItem.foot);
         }
     }
 
