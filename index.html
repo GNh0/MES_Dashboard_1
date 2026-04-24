@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/board-scroll.css" />
     <link rel="stylesheet" href="css/proposal-layout.css" />
     <link rel="stylesheet" href="css/flat-metric.css" />
+    <link rel="stylesheet" href="css/board-actions.css" />
 </head>
 <body>
 <div class="page">
@@ -82,12 +83,18 @@
         </section>
 
         <section class="box board notice" data-target="NOTICE">
-            <div class="board-title">공지사항</div>
+            <div class="board-header">
+                <div class="board-title">공지사항</div>
+                <button type="button" class="board-more" data-click-type="BOARD_MORE_CLICK" data-target="NOTICE">전체보기</button>
+            </div>
             <div id="noticeList" class="board-list"></div>
         </section>
 
         <section class="box board work-request" data-target="WORK_REQUEST">
-            <div class="board-title">업무지시요청</div>
+            <div class="board-header">
+                <div class="board-title">업무지시요청</div>
+                <button type="button" class="board-more" data-click-type="BOARD_MORE_CLICK" data-target="WORK_REQUEST">전체보기</button>
+            </div>
             <div id="workRequestList" class="board-list"></div>
         </section>
 
