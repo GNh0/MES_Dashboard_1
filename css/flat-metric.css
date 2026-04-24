@@ -11,6 +11,9 @@
     border-radius: 0;
     background: transparent;
     border-bottom: 1px solid #e8eef6;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    column-gap: clamp(8px, 0.95vmin, 14px);
 }
 
 .attendance-row:last-child {
@@ -23,13 +26,6 @@
 
 .attendance-name {
     color: #52627a;
-}
-
-.attendance-row,
-.proposal-stat {
-    grid-template-columns: auto auto;
-    justify-content: start;
-    column-gap: clamp(8px, 0.95vmin, 14px);
 }
 
 .attendance-count-wrap {
@@ -57,6 +53,9 @@
     border-radius: 0;
     background: transparent;
     border-bottom: 1px solid #e8eef6;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    column-gap: clamp(8px, 0.95vmin, 14px);
 }
 
 .proposal-stat:last-child {
