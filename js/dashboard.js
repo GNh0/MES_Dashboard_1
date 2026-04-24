@@ -21,13 +21,27 @@ const Dashboard = (() => {
     };
 
     document.addEventListener('click', function (e) {
+        const actionElement = e.target.closest('[data-click-type]');
+
+        if (actionElement) {
+            e.stopPropagation();
+            postToCSharp({
+                type: actionElement.dataset.clickType,
+                target: actionElement.dataset.target || ''
+            });
+            return;
+        }
+
         const targetElement = e.target.closest('[data-target]');
 
         if (!targetElement) {
             return;
         }
 
-        sendBoxClick(targetElement.dataset.target);
+        postToCSharp({
+            type: 'DASHBOARD_BOX_CLICK',
+            target: targetElement.dataset.target || ''
+        });
     });
 
     function renderDashboard(data) {
@@ -35,7 +49,6 @@ const Dashboard = (() => {
 
         setText('ciTitle', model.ciTitle || 'CI');
         setCiImage(model.ciImageUrl);
-
         renderAttendance(model.attendanceItems || [], model.attendanceFieldMap);
         renderApproval(model.approvalItems || []);
         renderProposalChart(model.proposalTargetCount ?? 0, model.proposalSubmitCount ?? 0);
@@ -129,8 +142,8 @@ const Dashboard = (() => {
             const name = getFieldValue(row, fieldMap.name, ['name', 'Name', 'TITLE', 'title', 'GUBUNNM', 'gubunnm', 'ATTNM', 'attnm']);
             const count = getFieldValue(row, fieldMap.count, ['count', 'Count', 'CNT', 'cnt', 'QTY', 'qty']);
             const unit = getFieldValue(row, fieldMap.unit, ['unit', 'Unit', 'UNIT', 'unitnm', 'UNITNM']) || '건';
-
             const item = document.createElement('div');
+
             item.className = 'attendance-row';
             item.innerHTML =
                 '<div class="attendance-name">' + escapeHtml(name || '-') + '</div>' +
@@ -157,13 +170,12 @@ const Dashboard = (() => {
     function renderProposalChart(targetCount, submitCount) {
         const target = toNumber(targetCount);
         const submit = toNumber(submitCount);
-
-        setText('proposalTargetCount', target);
-        setText('proposalSubmitCount', submit);
-
         const donut = document.getElementById('proposalDonut');
         const percentEl = document.getElementById('proposalPercent');
         const ratioEl = document.getElementById('proposalRatio');
+
+        setText('proposalTargetCount', target);
+        setText('proposalSubmitCount', submit);
 
         if (!donut || !percentEl || !ratioEl) {
             return;
@@ -196,11 +208,10 @@ const Dashboard = (() => {
             const writer = getFieldValue(row, fieldMap.writer, ['writer', 'Writer', 'WRITER', 'USERNM', 'usernm', 'EMPNM', 'empnm']);
             const date = formatBoardDate(getFieldValue(row, fieldMap.date, ['date', 'Date', 'DATE', 'WRTDT', 'wrtdt', 'REGDT', 'regdt', 'INDT', 'indt']));
             const itemTitle = title || '(제목 없음)';
-
             const boardRow = document.createElement('div');
+
             boardRow.className = 'board-row';
             boardRow.title = writer ? itemTitle + ' / ' + writer : itemTitle;
-
             boardRow.addEventListener('click', function (e) {
                 e.stopPropagation();
                 postToCSharp({
@@ -212,7 +223,6 @@ const Dashboard = (() => {
                     row: row
                 });
             });
-
             boardRow.innerHTML =
                 '<div class="board-row-title">' + escapeHtml(itemTitle) + '</div>' +
                 '<div class="board-row-date">' + escapeHtml(date) + '</div>';
@@ -242,8 +252,8 @@ const Dashboard = (() => {
             const name = getFieldValue(row, fieldMap.name, ['name', 'Name', 'CURRNM', 'currnm', 'CURCD', 'curcd', 'CODE', 'code', 'currency', 'Currency']);
             const value = getFieldValue(row, fieldMap.value, ['value', 'Value', 'RATE', 'rate', 'EXRATE', 'exrate', 'AMT', 'amt']);
             const unit = getFieldValue(row, fieldMap.unit, ['unit', 'Unit', 'UNIT', 'unitnm', 'UNITNM']);
-
             const item = document.createElement('div');
+
             item.innerHTML =
                 '<span class="rate-name">' + escapeHtml(name || '-') + '</span>' +
                 '<span class="rate-value">' + escapeHtml(formatRateValue(value, unit)) + '</span>';
@@ -274,11 +284,11 @@ const Dashboard = (() => {
         const text = String(value ?? '').trim();
 
         if (isYmd(text)) {
-            return text.substring(4, 6) + '-' + text.substring(6, 8);
+            return text.substring(0, 4) + '-' + text.substring(4, 6) + '-' + text.substring(6, 8);
         }
 
         if (text.length >= 10 && text.charAt(4) === '-' && text.charAt(7) === '-') {
-            return text.substring(5, 10);
+            return text.substring(0, 10);
         }
 
         return text;
@@ -324,13 +334,6 @@ const Dashboard = (() => {
         }
 
         return String(value ?? '0');
-    }
-
-    function sendBoxClick(target) {
-        postToCSharp({
-            type: 'DASHBOARD_BOX_CLICK',
-            target: target
-        });
     }
 
     function postToCSharp(message) {
