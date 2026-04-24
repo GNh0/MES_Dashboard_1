@@ -12,7 +12,7 @@
     background: transparent;
     border-bottom: 1px solid #e8eef6;
     grid-template-columns: auto auto;
-    justify-content: center;
+    justify-content: end;
     column-gap: clamp(8px, 0.95vmin, 14px);
 }
 
@@ -54,7 +54,7 @@
     background: transparent;
     border-bottom: 1px solid #e8eef6;
     grid-template-columns: auto auto;
-    justify-content: center;
+    justify-content: end;
     column-gap: clamp(8px, 0.95vmin, 14px);
 }
 
