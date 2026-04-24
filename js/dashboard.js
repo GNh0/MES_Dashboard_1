@@ -188,7 +188,7 @@ const Dashboard = (() => {
             return;
         }
 
-        rows.slice(0, 6).forEach(function (row) {
+        rows.forEach(function (row) {
             const key = getFieldValue(row, fieldMap.key, ['key', 'Key', 'SEQ', 'seq', 'NO', 'no', 'ID', 'id']);
             const title = getFieldValue(row, fieldMap.title, ['title', 'Title', 'TITLE', 'SUBJECT', 'subject', 'SUBJECTNM', 'subjectnm', 'CONTENT', 'content']);
             const writer = getFieldValue(row, fieldMap.writer, ['writer', 'Writer', 'WRITER', 'USERNM', 'usernm', 'EMPNM', 'empnm']);
