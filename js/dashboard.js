@@ -2,23 +2,18 @@ const Dashboard = (() => {
     const defaultData = {
         ciTitle: 'CI',
         ciImageUrl: '',
-
         attendanceFieldMap: { name: 'GUBUNNM', count: 'CNT', unit: 'UNIT' },
         attendanceItems: [],
-
         approvalItems: [
             { title: '미결', count: 0 },
             { title: '미결', count: 0 },
             { title: '미결', count: 0 }
         ],
-
         proposalTargetCount: 0,
         proposalSubmitCount: 0,
-
         noticeFieldMap: { key: 'SEQ', title: 'TITLE', writer: 'WRITER', date: 'WRTDT' },
         workRequestFieldMap: { key: 'REQNO', title: 'TITLE', writer: 'WRITER', date: 'REQDT' },
         exchangeFieldMap: { name: 'CURRNM', value: 'RATE', unit: 'UNIT', date: 'BASISDT' },
-
         exchangeBaseDate: '',
         exchangeRates: [],
         notices: [],
@@ -54,25 +49,19 @@ const Dashboard = (() => {
             return { ...defaultData };
         }
 
-        const exchangeRates = data.exchangeRates ?? data.ExchangeRates ?? makeLegacyExchangeRates(data);
-
         return {
             ciTitle: data.ciTitle ?? data.CiTitle ?? defaultData.ciTitle,
             ciImageUrl: data.ciImageUrl ?? data.CiImageUrl ?? defaultData.ciImageUrl,
-
             attendanceFieldMap: data.attendanceFieldMap ?? data.AttendanceFieldMap ?? defaultData.attendanceFieldMap,
             attendanceItems: data.attendanceItems ?? data.AttendanceItems ?? makeLegacyAttendanceItems(data),
-
             approvalItems: data.approvalItems ?? data.ApprovalItems ?? makeApprovalItems(data),
             proposalTargetCount: data.proposalTargetCount ?? data.ProposalTargetCount ?? defaultData.proposalTargetCount,
             proposalSubmitCount: data.proposalSubmitCount ?? data.ProposalSubmitCount ?? defaultData.proposalSubmitCount,
-
             noticeFieldMap: data.noticeFieldMap ?? data.NoticeFieldMap ?? defaultData.noticeFieldMap,
             workRequestFieldMap: data.workRequestFieldMap ?? data.WorkRequestFieldMap ?? defaultData.workRequestFieldMap,
             exchangeFieldMap: data.exchangeFieldMap ?? data.ExchangeFieldMap ?? defaultData.exchangeFieldMap,
-
             exchangeBaseDate: data.exchangeBaseDate ?? data.ExchangeBaseDate ?? defaultData.exchangeBaseDate,
-            exchangeRates: exchangeRates,
+            exchangeRates: data.exchangeRates ?? data.ExchangeRates ?? makeLegacyExchangeRates(data),
             notices: data.notices ?? data.Notices ?? defaultData.notices,
             workRequests: data.workRequests ?? data.WorkRequests ?? defaultData.workRequests
         };
@@ -85,9 +74,7 @@ const Dashboard = (() => {
             return defaultData.attendanceItems || [];
         }
 
-        return [
-            { name: '연차', count: annualCount, unit: '건' }
-        ];
+        return [{ name: '연차', count: annualCount, unit: '건' }];
     }
 
     function makeApprovalItems(data) {
@@ -126,7 +113,7 @@ const Dashboard = (() => {
             return;
         }
 
-        rows.slice(0, 3).forEach(function (row) {
+        rows.forEach(function (row) {
             const name = getFieldValue(row, fieldMap.name, ['name', 'Name', 'TITLE', 'title', 'GUBUNNM', 'gubunnm', 'ATTNM', 'attnm']);
             const count = getFieldValue(row, fieldMap.count, ['count', 'Count', 'CNT', 'cnt', 'QTY', 'qty']);
             const unit = getFieldValue(row, fieldMap.unit, ['unit', 'Unit', 'UNIT', 'unitnm', 'UNITNM']) || '건';
