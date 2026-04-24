@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MES Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+<div class="page">
+    <main class="dashboard">
+        <section class="box ci" data-target="CI">
+            <img id="ciImage" class="ci-image" alt="CI" />
+            <div id="ciTitle" class="ci-title">CI</div>
+        </section>
+
+        <section class="box attendance-card attendance" data-target="ATTENDANCE">
+            <div class="card-title">근태현황</div>
+            <div id="attendanceList" class="attendance-list"></div>
+            <div class="card-foot">오늘 기준</div>
+        </section>
+
+        <section class="box metric-card approval1" data-target="APPROVAL_1">
+            <div id="approvalTitle1" class="card-title">미결</div>
+            <div class="metric-body">
+                <div class="metric-value-wrap">
+                    <span id="approvalCount1" class="metric-value">0</span>
+                    <span class="metric-unit">건</span>
+                </div>
+            </div>
+            <div class="card-foot">결재 대기</div>
+        </section>
+
+        <section class="box metric-card approval2" data-target="APPROVAL_2">
+            <div id="approvalTitle2" class="card-title">미결</div>
+            <div class="metric-body">
+                <div class="metric-value-wrap">
+                    <span id="approvalCount2" class="metric-value">0</span>
+                    <span class="metric-unit">건</span>
+                </div>
+            </div>
+            <div class="card-foot">검토 대기</div>
+        </section>
+
+        <section class="box metric-card approval3" data-target="APPROVAL_3">
+            <div id="approvalTitle3" class="card-title">미결</div>
+            <div class="metric-body">
+                <div class="metric-value-wrap">
+                    <span id="approvalCount3" class="metric-value">0</span>
+                    <span class="metric-unit">건</span>
+                </div>
+            </div>
+            <div class="card-foot">확인 대기</div>
+        </section>
+
+        <section class="box proposal-card proposal" data-target="PROPOSAL">
+            <div class="card-title">제안</div>
+            <div class="proposal-content">
+                <div class="proposal-info">
+                    <div class="proposal-stat">
+                        <div class="proposal-stat-label">목표</div>
+                        <div class="proposal-stat-value"><span id="proposalTargetCount">0</span><em>건</em></div>
+                    </div>
+                    <div class="proposal-stat">
+                        <div class="proposal-stat-label">제출</div>
+                        <div class="proposal-stat-value"><span id="proposalSubmitCount">0</span><em>건</em></div>
+                    </div>
+                </div>
+                <div class="proposal-chart-wrap">
+                    <div id="proposalDonut" class="proposal-donut">
+                        <div class="proposal-donut-inner">
+                            <div id="proposalPercent" class="proposal-percent">0%</div>
+                            <div class="proposal-percent-label">달성률</div>
+                            <div id="proposalRatio" class="proposal-ratio">0 / 0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="box board notice">
+            <div class="board-title" data-target="NOTICE">공지사항</div>
+            <div id="noticeList" class="board-list"></div>
+        </section>
+
+        <section class="box board work-request">
+            <div class="board-title" data-target="WORK_REQUEST">업무지시요청</div>
+            <div id="workRequestList" class="board-list"></div>
+        </section>
+
+        <section class="box exchange" data-target="EXCHANGE_RATE">
+            <div class="exchange-inner">
+                <div class="exchange-top">
+                    <div class="exchange-title">환율</div>
+                    <div id="exchangeBaseDate" class="exchange-date">0000년 00월00일기준</div>
+                </div>
+                <div id="exchangeRateList" class="rate-list"></div>
+                <div class="dots">.....</div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="js/dashboard.js"></script>
+<script src="js/sample-data.js"></script>
+</body>
+</html>
