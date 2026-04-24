@@ -1,0 +1,48 @@
+.board-header {
+    display: flex;
+    align-items: center;
+    height: clamp(28px, 3vmin, 38px);
+    margin-bottom: clamp(10px, 1.3vmin, 15px);
+    gap: clamp(8px, 1vmin, 12px);
+}
+
+.board-header .board-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: auto;
+    margin-bottom: 0;
+}
+
+.board-header .board-title::after {
+    content: none;
+}
+
+.board-more {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(5px, 0.6vmin, 7px) clamp(9px, 1vmin, 12px);
+    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+    background: #f1f5f9;
+    color: var(--sub-text);
+    font-family: inherit;
+    font-size: clamp(10px, 1vmin, 12px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+}
+
+.board-more:hover {
+    background: #eaf2ff;
+    border-color: #bfdbfe;
+    color: var(--blue);
+}
+
+.board-more:active {
+    transform: scale(0.98);
+}
