@@ -1,0 +1,26 @@
+.board {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.board-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 2px;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.board-list::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.board-row {
+    flex: 0 0 auto;
+}
