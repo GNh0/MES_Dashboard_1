@@ -6,7 +6,8 @@ renderDashboard({
     attendanceItems: [
         { GUBUNNM: '연차', CNT: 2, UNIT: '건' },
         { GUBUNNM: '반차', CNT: 1, UNIT: '건' },
-        { GUBUNNM: '외근', CNT: 3, UNIT: '건' }
+        { GUBUNNM: '외근', CNT: 3, UNIT: '건' },
+        { GUBUNNM: '남은연차', CNT: 12, UNIT: '일' }
     ],
 
     approvalItems: [
