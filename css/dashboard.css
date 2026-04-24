@@ -56,7 +56,7 @@ body {
     position: relative;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    grid-template-rows: 1.05fr 1.1fr 2.35fr;
+    grid-template-rows: 1.28fr 1.08fr 2.02fr;
     gap: clamp(10px, 1.35vmin, 22px);
     padding: clamp(14px, 2.1vmin, 30px);
     background: var(--panel-bg);
@@ -173,13 +173,13 @@ body {
 
 .ci-image {
     max-width: 82%;
-    max-height: clamp(56px, 8vmin, 96px);
+    max-height: clamp(64px, 9.4vmin, 112px);
     object-fit: contain;
     display: none;
 }
 
 .ci-title {
-    font-size: clamp(28px, 4vmin, 50px);
+    font-size: clamp(30px, 4.4vmin, 56px);
     font-weight: 900;
     letter-spacing: 0;
 }
