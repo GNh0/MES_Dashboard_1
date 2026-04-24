@@ -1,6 +1,6 @@
 renderDashboard({
     ciTitle: 'KONE MES',
-    ciImageUrl: '',
+    ciImageUrl: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 viewBox%3D%220 0 720 180%22%3E%3Crect width%3D%22720%22 height%3D%22180%22 fill%3D%22none%22/%3E%3Ccircle cx%3D%22125%22 cy%3D%2290%22 r%3D%2252%22 fill%3D%22%23ffffff%22 opacity%3D%220.95%22/%3E%3Cpath d%3D%22M101 116V64h16v20l20-20h22l-28 28 30 24h-23l-21-18v18h-16z%22 fill%3D%22%231e3a5f%22/%3E%3Ctext x%3D%22385%22 y%3D%22108%22 text-anchor%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 font-size%3D%2264%22 font-weight%3D%22900%22 fill%3D%22%23ffffff%22 letter-spacing%3D%223%22%3EKONE MES%3C/text%3E%3Ctext x%3D%22385%22 y%3D%22142%22 text-anchor%3D%22middle%22 font-family%3D%22Arial%2C sans-serif%22 font-size%3D%2220%22 font-weight%3D%22700%22 fill%3D%22%23bfdbfe%22 letter-spacing%3D%226%22%3EDASHBOARD%3C/text%3E%3C/svg%3E',
 
     attendanceFieldMap: { name: 'GUBUNNM', count: 'CNT', unit: 'UNIT' },
     attendanceItems: [
