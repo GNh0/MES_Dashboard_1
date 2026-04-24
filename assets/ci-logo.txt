@@ -1,0 +1,1 @@
+Replace this file with your company CI image file. Recommended path: assets/ci-logo.png
