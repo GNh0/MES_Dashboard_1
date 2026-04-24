@@ -1,0 +1,64 @@
+.attendance-list {
+    justify-content: center;
+    gap: 0;
+    padding-top: clamp(4px, 0.7vmin, 9px);
+}
+
+.attendance-row {
+    min-height: clamp(26px, 3.15vmin, 39px);
+    padding: 0 clamp(2px, 0.5vmin, 7px);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    border-bottom: 1px solid #e8eef6;
+}
+
+.attendance-row:last-child {
+    border-bottom: 0;
+}
+
+.attendance-row:hover {
+    background: transparent;
+}
+
+.attendance-name {
+    color: #52627a;
+}
+
+.attendance-count {
+    font-size: clamp(21px, 3vmin, 36px);
+}
+
+.proposal-info {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 0;
+    height: 100%;
+    min-height: 0;
+}
+
+.proposal-stat {
+    height: 100%;
+    min-height: 0;
+    padding: 0 clamp(2px, 0.6vmin, 8px);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    border-bottom: 1px solid #e8eef6;
+}
+
+.proposal-stat:last-child {
+    border-bottom: 0;
+}
+
+.proposal-stat-label {
+    color: #52627a;
+}
+
+.proposal-stat-value {
+    font-size: clamp(28px, 3.7vmin, 50px);
+}
+
+.proposal-chart-wrap {
+    padding: 0;
+}
