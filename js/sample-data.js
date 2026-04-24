@@ -21,10 +21,10 @@ renderDashboard({
 
     noticeFieldMap: { key: 'SEQ', title: 'TITLE', writer: 'WRITER', date: 'WRTDT' },
     notices: [
-        { SEQ: 'N001', TITLE: '공지사항 샘플 제목입니다.', WRITER: '관리자', WRTDT: '20260424' },
-        { SEQ: 'N002', TITLE: '시스템 점검 안내입니다.', WRITER: '관리자', WRTDT: '20260423' },
+        { SEQ: 'N001', TITLE: '공지사항 제목이 매우 길어졌을 때 말줄임으로 처리되는지 확인하기 위한 샘플 제목입니다.', WRITER: '관리자', WRTDT: '20260424' },
+        { SEQ: 'N002', TITLE: '시스템 정기점검 및 네트워크 장비 교체 작업으로 인한 MES 접속 제한 안내입니다.', WRITER: '관리자', WRTDT: '20260423' },
         { SEQ: 'N003', TITLE: '업무 공지 안내입니다.', WRITER: '총무팀', WRTDT: '20260422' },
-        { SEQ: 'N004', TITLE: '공지사항 네 번째 샘플입니다.', WRITER: '관리자', WRTDT: '20260421' },
+        { SEQ: 'N004', TITLE: '월말 재고조사 일정 및 부서별 담당자 확인 요청 공지사항입니다.', WRITER: '자재팀', WRTDT: '20260421' },
         { SEQ: 'N005', TITLE: '공지사항 다섯 번째 샘플입니다.', WRITER: '관리자', WRTDT: '20260420' },
         { SEQ: 'N006', TITLE: '보안 점검 일정 안내입니다.', WRITER: '전산팀', WRTDT: '20260419' },
         { SEQ: 'N007', TITLE: '월말 재고조사 일정 안내입니다.', WRITER: '자재팀', WRTDT: '20260418' },
@@ -39,9 +39,9 @@ renderDashboard({
     workRequests: [
         { REQNO: 'W001', TITLE: '작업지시 확인 요청입니다.', WRITER: '생산팀', REQDT: '20260424' },
         { REQNO: 'W002', TITLE: '품질 확인 요청입니다.', WRITER: '품질팀', REQDT: '20260424' },
-        { REQNO: 'W003', TITLE: '업무지시요청 샘플입니다.', WRITER: '관리자', REQDT: '20260423' },
+        { REQNO: 'W003', TITLE: '업무지시요청 제목이 길어질 경우 행 제목 영역에서 말줄임 처리되는지 확인하는 샘플입니다.', WRITER: '관리자', REQDT: '20260423' },
         { REQNO: 'W004', TITLE: '설비 점검 요청입니다.', WRITER: '공무팀', REQDT: '20260422' },
-        { REQNO: 'W005', TITLE: '자재 확인 요청입니다.', WRITER: '구매팀', REQDT: '20260421' },
+        { REQNO: 'W005', TITLE: '자재 입고 지연으로 인한 생산계획 변경 가능 여부 확인 요청입니다.', WRITER: '구매팀', REQDT: '20260421' },
         { REQNO: 'W006', TITLE: '긴급 출하 준비 요청입니다.', WRITER: '영업팀', REQDT: '20260420' },
         { REQNO: 'W007', TITLE: '공정 변경 확인 요청입니다.', WRITER: '생산관리', REQDT: '20260419' },
         { REQNO: 'W008', TITLE: '작업자 배정 확인 요청입니다.', WRITER: '생산팀', REQDT: '20260418' },
