@@ -25,6 +25,18 @@
     color: #52627a;
 }
 
+.attendance-row,
+.proposal-stat {
+    grid-template-columns: auto auto;
+    justify-content: start;
+    column-gap: clamp(8px, 0.95vmin, 14px);
+}
+
+.attendance-count-wrap {
+    justify-content: flex-start;
+    gap: clamp(3px, 0.45vmin, 6px);
+}
+
 .attendance-count {
     font-size: clamp(21px, 3vmin, 36px);
 }
@@ -56,6 +68,8 @@
 }
 
 .proposal-stat-value {
+    justify-content: flex-start;
+    gap: clamp(3px, 0.45vmin, 6px);
     font-size: clamp(28px, 3.7vmin, 50px);
 }
 
