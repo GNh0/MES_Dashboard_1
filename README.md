@@ -1,82 +1,272 @@
 # MES Dashboard
 
-WebView2에서 사용할 MES 대시보드 화면입니다.
+WinForms `WebView2`에서 사용할 MES 대시보드 화면입니다.
+
+## 확인용 페이지
+
+GitHub Pages를 켜면 아래 주소에서 화면을 바로 확인할 수 있습니다.
+
+```text
+https://gnh0.github.io/MES_Dashboard_1/
+```
+
+캐시 때문에 변경사항이 늦게 보이면 `Ctrl + F5`로 새로고침하면 됩니다.
 
 ## 파일 구조
 
 ```text
 MES_Dashboard_1/
-  index.html
+  index.html                         # 실제 WebView2에서 사용할 화면
+  standalone.html                    # 단독 확인용 통합본
   css/
     dashboard.css
+    board-scroll.css
+    proposal-layout.css
+    flat-metric.css
   js/
-    dashboard.js
-    sample-data.js
+    dashboard.js                     # 기본 렌더링 함수
+    dashboard-config.js              # 제목/푸터 설정 API
+    sample-data.js                   # 테스트 데이터
+  csharp/
+    MesDashboardKernel.cs            # C# WebView2 헬퍼
+  samples/
+    WinFormsWebView2Sample/          # WinForms 샘플 프로젝트
 ```
 
-## 실행 방식
+## C# 사용 방식
 
-`index.html`을 WebView2에서 열면 됩니다.
+구조는 두 단계입니다.
+
+```text
+1. configureDashboard(...)
+   - 카드 제목, 푸터, 라벨, CI 이미지 같은 고정 문구 설정
+
+2. renderDashboardValues(...)
+   - 실제 숫자, 게시판 목록, 환율 데이터만 갱신
+```
+
+즉, 카드 위치는 고정 프레임이고, C#에서 제목/푸터를 먼저 정한 뒤 나중에 값만 계속 갈아끼우는 방식입니다.
+
+## WebView2 초기화 예시
 
 ```csharp
-string dashboardPath = Path.Combine(Application.StartupPath, "Dashboard", "index.html");
-webView21.Source = new Uri(dashboardPath);
+using MesDashboard;
+using Microsoft.Web.WebView2.WinForms;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+public partial class FrmDashboard : Form
+{
+    private MesDashboardKernel? dashboard;
+
+    private async void FrmDashboard_Load(object sender, EventArgs e)
+    {
+        dashboard = new MesDashboardKernel(webView21);
+        dashboard.DashboardMessageReceived += Dashboard_DashboardMessageReceived;
+
+        string dashboardDirectory = Path.Combine(Application.StartupPath, "Dashboard");
+        await dashboard.InitializeAsync(dashboardDirectory);
+
+        webView21.NavigationCompleted += async (_, ev) =>
+        {
+            if (!ev.IsSuccess)
+            {
+                MessageBox.Show("대시보드 로딩 실패");
+                return;
+            }
+
+            await ConfigureDashboardAsync();
+            await RenderValuesAsync();
+        };
+    }
+}
 ```
 
-또는 C#에서 HTML 로딩 후 아래처럼 데이터를 다시 주입할 수 있습니다.
+## 제목/푸터 설정 예시
 
 ```csharp
-string json = JsonSerializer.Serialize(data);
-await webView21.CoreWebView2.ExecuteScriptAsync($"renderDashboard({json});");
+private async Task ConfigureDashboardAsync()
+{
+    var config = new
+    {
+        // 실제 CI 이미지를 사용할 때는 Dashboard/assets/ci-logo.png 같은 상대 경로나 base64를 넣으면 됩니다.
+        ciImageUrl = "assets/ci-logo.png",
+        ciTitle = "KONE MES", // 이미지가 없을 때만 fallback으로 보입니다.
+
+        attendanceTitle = "근태현황",
+        attendanceFoot = "오늘 기준",
+
+        approvalItems = new[]
+        {
+            new { title = "전자결재", foot = "결재 대기" },
+            new { title = "구매승인", foot = "검토 대기" },
+            new { title = "생산확인", foot = "확인 대기" }
+        },
+
+        proposalTitle = "제안",
+        proposalTargetLabel = "목표",
+        proposalSubmitLabel = "제출",
+
+        noticeTitle = "공지사항",
+        workRequestTitle = "업무지시요청",
+        exchangeTitle = "환율"
+    };
+
+    await dashboard!.ConfigureAsync(config);
+}
 ```
 
-## 데이터 형태 예시
+## 값 갱신 예시
 
-```javascript
-renderDashboard({
-    ciTitle: 'KONE MES',
-    ciImageUrl: '',
+```csharp
+private async Task RenderValuesAsync()
+{
+    var values = new
+    {
+        attendanceFieldMap = new { name = "GUBUNNM", count = "CNT", unit = "UNIT" },
+        attendanceItems = new[]
+        {
+            new { GUBUNNM = "연차", CNT = 2, UNIT = "건" },
+            new { GUBUNNM = "반차", CNT = 1, UNIT = "건" },
+            new { GUBUNNM = "외근", CNT = 3, UNIT = "건" },
+            new { GUBUNNM = "남은연차", CNT = 12, UNIT = "일" }
+        },
 
-    attendanceFieldMap: { name: 'GUBUNNM', count: 'CNT', unit: 'UNIT' },
-    attendanceItems: [
-        { GUBUNNM: '연차', CNT: 2, UNIT: '건' },
-        { GUBUNNM: '반차', CNT: 1, UNIT: '건' },
-        { GUBUNNM: '외근', CNT: 3, UNIT: '건' }
-    ],
+        // 제목/푸터는 configureDashboard에서 정했으므로 count만 넘기면 됩니다.
+        approvalItems = new[]
+        {
+            new { count = 3 },
+            new { count = 1 },
+            new { count = 4 }
+        },
 
-    approvalItems: [
-        { title: '전자결재', count: 3 },
-        { title: '구매승인', count: 1 },
-        { title: '생산확인', count: 4 }
-    ],
+        proposalTargetCount = 12,
+        proposalSubmitCount = 7,
 
-    proposalTargetCount: 12,
-    proposalSubmitCount: 7,
+        noticeFieldMap = new { key = "SEQ", title = "TITLE", writer = "WRITER", date = "WRTDT" },
+        notices = new[]
+        {
+            new { SEQ = "N001", TITLE = "공지사항 샘플 제목입니다.", WRITER = "관리자", WRTDT = "20260424" },
+            new { SEQ = "N002", TITLE = "시스템 점검 안내입니다.", WRITER = "관리자", WRTDT = "20260423" }
+        },
 
-    noticeFieldMap: { key: 'SEQ', title: 'TITLE', writer: 'WRITER', date: 'WRTDT' },
-    notices: [
-        { SEQ: 'N001', TITLE: '공지사항 제목', WRITER: '관리자', WRTDT: '20260424' }
-    ],
+        workRequestFieldMap = new { key = "REQNO", title = "TITLE", writer = "WRITER", date = "REQDT" },
+        workRequests = new[]
+        {
+            new { REQNO = "W001", TITLE = "작업지시 확인 요청입니다.", WRITER = "생산팀", REQDT = "20260424" },
+            new { REQNO = "W002", TITLE = "품질 확인 요청입니다.", WRITER = "품질팀", REQDT = "20260424" }
+        },
 
-    workRequestFieldMap: { key: 'REQNO', title: 'TITLE', writer: 'WRITER', date: 'REQDT' },
-    workRequests: [
-        { REQNO: 'W001', TITLE: '업무지시요청 제목', WRITER: '생산팀', REQDT: '20260424' }
-    ],
+        exchangeFieldMap = new { name = "CURRNM", value = "RATE", unit = "UNIT", date = "BASISDT" },
+        exchangeRates = new[]
+        {
+            new { CURRNM = "달러", RATE = 1380.5m, UNIT = "원", BASISDT = "20260424" },
+            new { CURRNM = "엔화", RATE = 9.12m, UNIT = "원", BASISDT = "20260424" },
+            new { CURRNM = "유로", RATE = 1472.3m, UNIT = "원", BASISDT = "20260424" }
+        }
+    };
 
-    exchangeFieldMap: { name: 'CURRNM', value: 'RATE', unit: 'UNIT', date: 'BASISDT' },
-    exchangeRates: [
-        { CURRNM: '달러', RATE: 1380.5, UNIT: '원', BASISDT: '20260424' },
-        { CURRNM: '엔화', RATE: 9.12, UNIT: '원', BASISDT: '20260424' }
-    ]
-});
+    await dashboard!.RenderValuesAsync(values);
+}
 ```
 
-## 클릭 이벤트
+## 클릭 이벤트 수신 예시
 
-카드 클릭 시 WebView2로 메시지를 보냅니다.
+```csharp
+private void Dashboard_DashboardMessageReceived(object? sender, DashboardMessage e)
+{
+    switch (e.Type)
+    {
+        case "DASHBOARD_BOX_CLICK":
+            OpenDashboardProgram(e.Target);
+            break;
 
-- 일반 카드: `DASHBOARD_BOX_CLICK`
-- 공지사항 행: `NOTICE_DETAIL`
-- 업무지시요청 행: `WORK_REQUEST_DETAIL`
+        case "NOTICE_DETAIL":
+            MessageBox.Show($"공지사항 상세: {e.Key}\n{e.Title}");
+            break;
 
-C#에서는 `CoreWebView2.WebMessageReceived`에서 받으면 됩니다.
+        case "WORK_REQUEST_DETAIL":
+            MessageBox.Show($"업무지시요청 상세: {e.Key}\n{e.Title}");
+            break;
+    }
+}
+
+private void OpenDashboardProgram(string? target)
+{
+    switch (target)
+    {
+        case "ATTENDANCE":
+            MessageBox.Show("근태현황 프로그램 실행");
+            break;
+
+        case "APPROVAL_1":
+            MessageBox.Show("전자결재 프로그램 실행");
+            break;
+
+        case "NOTICE":
+            MessageBox.Show("공지사항 목록 프로그램 실행");
+            break;
+    }
+}
+```
+
+## DataTable 컬럼 구조 예시
+
+근태현황은 아래처럼 한 행이 화면의 한 줄입니다.
+
+```text
+GUBUNNM    CNT    UNIT
+연차        2      건
+반차        1      건
+외근        3      건
+남은연차    12     일
+```
+
+컬럼명이 다르면 `attendanceFieldMap`만 바꾸면 됩니다.
+
+```csharp
+attendanceFieldMap = new { name = "TITLE", count = "VALUE", unit = "UNITNM" }
+```
+
+공지사항/업무지시요청도 같은 방식입니다.
+
+```text
+SEQ    TITLE              WRITER    WRTDT
+N001   공지사항 제목       관리자     20260424
+```
+
+## 샘플 프로젝트 실행
+
+샘플 프로젝트 위치:
+
+```text
+samples/WinFormsWebView2Sample/WinFormsWebView2Sample.csproj
+```
+
+실행 방법:
+
+```bash
+cd samples/WinFormsWebView2Sample
+dotnet restore
+dotnet run
+```
+
+샘플 프로젝트는 빌드 시 `index.html`, `css`, `js`, `assets`를 출력 폴더의 `Dashboard` 폴더로 복사합니다.
+
+```text
+bin/Debug/net8.0-windows/
+  WinFormsWebView2Sample.exe
+  Dashboard/
+    index.html
+    css/
+    js/
+    assets/
+```
+
+## 참고
+
+- `configureDashboard(...)`: 고정 문구 설정
+- `renderDashboardValues(...)`: 실제 값 갱신
+- `renderDashboard(...)`: 기존 호환용 전체 렌더링
