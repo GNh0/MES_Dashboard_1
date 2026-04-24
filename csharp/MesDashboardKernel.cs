@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MesDashboard;
 
 /// <summary>
-/// WebView2 기반 MES Dashboard 로딩/데이터 전달/클릭 이벤트 수신용 헬퍼입니다.
+/// WebView2 기반 MES Dashboard 로딩/설정/데이터 전달/클릭 이벤트 수신용 헬퍼입니다.
 /// WinForms에서 WebView2 컨트롤을 넘겨서 사용합니다.
 /// </summary>
 public sealed class MesDashboardKernel
@@ -24,6 +24,7 @@ public sealed class MesDashboardKernel
 
     /// <summary>
     /// index.html 파일을 WebView2에 로드합니다.
+    /// dashboardDirectory는 index.html이 들어있는 폴더입니다.
     /// </summary>
     public async Task InitializeAsync(string dashboardDirectory)
     {
@@ -45,24 +46,47 @@ public sealed class MesDashboardKernel
     }
 
     /// <summary>
-    /// C# 객체를 JSON으로 변환해서 renderDashboard(data)를 호출합니다.
+    /// 카드 제목, 푸터, 라벨 등 정적인 문구를 설정합니다.
+    /// JS의 configureDashboard(config)를 호출합니다.
+    /// </summary>
+    public async Task ConfigureAsync(object config)
+    {
+        await ExecuteJsonFunctionAsync("configureDashboard", config);
+    }
+
+    /// <summary>
+    /// 숫자, 게시판, 환율 등 실제 값만 갱신합니다.
+    /// JS의 renderDashboardValues(values)를 호출합니다.
+    /// </summary>
+    public async Task RenderValuesAsync(object values)
+    {
+        await ExecuteJsonFunctionAsync("renderDashboardValues", values);
+    }
+
+    /// <summary>
+    /// 기존 방식 호환용입니다. JS의 renderDashboard(data)를 직접 호출합니다.
     /// </summary>
     public async Task RenderAsync(object dashboardData)
+    {
+        await ExecuteJsonFunctionAsync("renderDashboard", dashboardData);
+    }
+
+    private async Task ExecuteJsonFunctionAsync(string functionName, object argument)
     {
         if (_webView.CoreWebView2 == null)
             throw new InvalidOperationException("WebView2가 아직 초기화되지 않았습니다.");
 
-        string json = JsonSerializer.Serialize(dashboardData, new JsonSerializerOptions
+        string json = JsonSerializer.Serialize(argument, new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         });
 
-        await _webView.CoreWebView2.ExecuteScriptAsync($"renderDashboard({json});");
+        await _webView.CoreWebView2.ExecuteScriptAsync($"{functionName}({json});");
     }
 
     private void CoreWebView2_WebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
-        DashboardMessage? message = null;
+        DashboardMessage? message;
 
         try
         {
