@@ -84,6 +84,130 @@ public partial class FrmDashboard : Form
 }
 ```
 
+## HTML/이미지 모두 C# 리소스로 사용할 때
+
+실행 파일 옆에 `Dashboard` 폴더를 두지 않고, HTML과 이미지까지 전부 `Resources.resx`에 넣어서 쓸 수도 있습니다.
+
+이 경우 추천 방식은 다음과 같습니다.
+
+```text
+1. DashboardHtml
+   - 통합 HTML 문자열 리소스
+   - NavigateToString(Properties.Resources.DashboardHtml)로 로드
+
+2. CiLogo
+   - PNG/JPG 이미지 리소스
+   - Base64로 바꾸지 않음
+   - 임시 파일로 풀지도 않음
+   - WebView2의 WebResourceRequested에서 가상 URL로 응답
+```
+
+HTML에서는 이미지를 실제 파일 경로가 아니라 가상 URL로 사용합니다.
+
+```csharp
+ciImageUrl = "https://mes-dashboard.local/assets/ci-logo.png"
+```
+
+WebView2 초기화 예시입니다.
+
+```csharp
+using Microsoft.Web.WebView2.Core;
+using System;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Windows.Forms;
+
+private async Task InitDashboardFromResourceAsync()
+{
+    await webView21.EnsureCoreWebView2Async();
+
+    webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
+
+    webView21.CoreWebView2.AddWebResourceRequestedFilter(
+        "https://mes-dashboard.local/assets/*",
+        CoreWebView2WebResourceContext.Image
+    );
+
+    webView21.CoreWebView2.WebResourceRequested -= CoreWebView2_WebResourceRequested;
+    webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+
+    webView21.CoreWebView2.WebMessageReceived -= CoreWebView2_WebMessageReceived;
+    webView21.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+
+    webView21.NavigationCompleted -= WebView21_NavigationCompleted;
+    webView21.NavigationCompleted += WebView21_NavigationCompleted;
+
+    webView21.NavigateToString(Properties.Resources.DashboardHtml);
+}
+```
+
+이미지 리소스 응답 예시입니다.
+
+```csharp
+private void CoreWebView2_WebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+{
+    string uri = e.Request.Uri;
+
+    if (uri.Equals("https://mes-dashboard.local/assets/ci-logo.png", StringComparison.OrdinalIgnoreCase))
+    {
+        using var ms = new MemoryStream();
+
+        // Resources.resx에 CiLogo 이미지로 등록되어 있다고 가정합니다.
+        Properties.Resources.CiLogo.Save(ms, ImageFormat.Png);
+
+        byte[] bytes = ms.ToArray();
+        var stream = new MemoryStream(bytes);
+
+        e.Response = webView21.CoreWebView2.Environment.CreateWebResourceResponse(
+            stream,
+            200,
+            "OK",
+            "Content-Type: image/png"
+        );
+    }
+}
+```
+
+리소스 방식에서 CI 이미지는 이렇게 설정합니다.
+
+```csharp
+private async Task ConfigureDashboardAsync()
+{
+    var config = new
+    {
+        ciImageUrl = "https://mes-dashboard.local/assets/ci-logo.png",
+        ciTitle = "KONE MES", // 이미지 로드 실패 시 fallback
+
+        attendanceTitle = "근태현황",
+        attendanceFoot = "오늘 기준",
+
+        approvalItems = new[]
+        {
+            new { title = "전자결재", foot = "결재 대기" },
+            new { title = "구매승인", foot = "검토 대기" },
+            new { title = "생산확인", foot = "확인 대기" }
+        },
+
+        proposalTitle = "제안",
+        proposalTargetLabel = "목표",
+        proposalSubmitLabel = "제출",
+        noticeTitle = "공지사항",
+        workRequestTitle = "업무지시요청",
+        exchangeTitle = "환율"
+    };
+
+    await dashboard!.ConfigureAsync(config);
+}
+```
+
+정리하면, 리소스 방식에서는 다음 방식이 가장 깔끔합니다.
+
+```text
+DashboardHtml → NavigateToString으로 로드
+CiLogo        → WebResourceRequested로 가상 URL 응답
+ciImageUrl    → https://mes-dashboard.local/assets/ci-logo.png
+```
+
 ## 제목/푸터 설정 예시
 
 ```csharp
@@ -183,6 +307,10 @@ private void Dashboard_DashboardMessageReceived(object? sender, DashboardMessage
             OpenDashboardProgram(e.Target);
             break;
 
+        case "BOARD_MORE_CLICK":
+            OpenBoardList(e.Target);
+            break;
+
         case "NOTICE_DETAIL":
             MessageBox.Show($"공지사항 상세: {e.Key}\n{e.Title}");
             break;
@@ -206,7 +334,21 @@ private void OpenDashboardProgram(string? target)
             break;
 
         case "NOTICE":
-            MessageBox.Show("공지사항 목록 프로그램 실행");
+            MessageBox.Show("공지사항 카드 클릭");
+            break;
+    }
+}
+
+private void OpenBoardList(string? target)
+{
+    switch (target)
+    {
+        case "NOTICE":
+            MessageBox.Show("공지사항 전체보기");
+            break;
+
+        case "WORK_REQUEST":
+            MessageBox.Show("업무지시요청 전체보기");
             break;
     }
 }
