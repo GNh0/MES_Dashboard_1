@@ -1,0 +1,4 @@
+.ci::before {
+    content: none !important;
+    display: none !important;
+}
