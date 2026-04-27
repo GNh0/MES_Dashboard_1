@@ -22,10 +22,90 @@ const DashboardConfig = (() => {
         applyStaticText(config);
     }
 
+    function configureDashboardCi(newConfig) {
+        config = mergeConfig(config, {
+            ciTitle: newConfig?.ciTitle ?? newConfig?.title ?? config.ciTitle,
+            ciImageUrl: newConfig?.ciImageUrl ?? newConfig?.imageUrl ?? config.ciImageUrl
+        });
+
+        applyStaticText(config);
+        setCiImage(config.ciImageUrl);
+    }
+
+    function configureDashboardAttendance(newConfig) {
+        config = mergeConfig(config, {
+            attendanceTitle: newConfig?.attendanceTitle ?? newConfig?.title ?? config.attendanceTitle,
+            attendanceFoot: newConfig?.attendanceFoot ?? newConfig?.foot ?? config.attendanceFoot
+        });
+
+        applyStaticText(config);
+    }
+
+    function configureDashboardApproval(indexOrItems, newConfig) {
+        if (Array.isArray(indexOrItems)) {
+            config = mergeConfig(config, { approvalItems: indexOrItems });
+            applyStaticText(config);
+            return;
+        }
+
+        const index = Number(indexOrItems) - 1;
+
+        if (index < 0 || index >= config.approvalItems.length) {
+            return;
+        }
+
+        const approvalItems = config.approvalItems.map(function (item, itemIndex) {
+            if (itemIndex !== index) {
+                return item;
+            }
+
+            return {
+                ...item,
+                ...(newConfig || {})
+            };
+        });
+
+        config = mergeConfig(config, { approvalItems: approvalItems });
+        applyStaticText(config);
+    }
+
+    function configureDashboardProposal(newConfig) {
+        config = mergeConfig(config, {
+            proposalTitle: newConfig?.proposalTitle ?? newConfig?.title ?? config.proposalTitle,
+            proposalTargetLabel: newConfig?.proposalTargetLabel ?? newConfig?.targetLabel ?? config.proposalTargetLabel,
+            proposalSubmitLabel: newConfig?.proposalSubmitLabel ?? newConfig?.submitLabel ?? config.proposalSubmitLabel
+        });
+
+        applyStaticText(config);
+    }
+
+    function configureDashboardBoard(boardType, newConfig) {
+        const target = String(boardType || '').toUpperCase();
+        const title = newConfig?.title ?? newConfig?.boardTitle;
+
+        if (target === 'NOTICE') {
+            config = mergeConfig(config, { noticeTitle: title ?? config.noticeTitle });
+        }
+        else if (target === 'WORK_REQUEST') {
+            config = mergeConfig(config, { workRequestTitle: title ?? config.workRequestTitle });
+        }
+
+        applyStaticText(config);
+    }
+
+    function configureDashboardExchange(newConfig) {
+        config = mergeConfig(config, {
+            exchangeTitle: newConfig?.exchangeTitle ?? newConfig?.title ?? config.exchangeTitle
+        });
+
+        applyStaticText(config);
+    }
+
     function renderDashboardValues(values) {
         const data = buildRenderData(values || {});
         window.renderDashboard(data);
         applyStaticText(config);
+        setCiImage(config.ciImageUrl);
     }
 
     function buildRenderData(values) {
@@ -100,6 +180,24 @@ const DashboardConfig = (() => {
         return merged;
     }
 
+    function setCiImage(url) {
+        const ci = document.querySelector('.ci');
+        const img = document.getElementById('ciImage');
+
+        if (!ci || !img) {
+            return;
+        }
+
+        if (!url) {
+            img.removeAttribute('src');
+            ci.classList.remove('has-image');
+            return;
+        }
+
+        img.src = url;
+        ci.classList.add('has-image');
+    }
+
     function setText(id, value) {
         const el = document.getElementById(id);
 
@@ -118,9 +216,21 @@ const DashboardConfig = (() => {
 
     return {
         configureDashboard,
+        configureDashboardCi,
+        configureDashboardAttendance,
+        configureDashboardApproval,
+        configureDashboardProposal,
+        configureDashboardBoard,
+        configureDashboardExchange,
         renderDashboardValues
     };
 })();
 
 window.configureDashboard = DashboardConfig.configureDashboard;
+window.configureDashboardCi = DashboardConfig.configureDashboardCi;
+window.configureDashboardAttendance = DashboardConfig.configureDashboardAttendance;
+window.configureDashboardApproval = DashboardConfig.configureDashboardApproval;
+window.configureDashboardProposal = DashboardConfig.configureDashboardProposal;
+window.configureDashboardBoard = DashboardConfig.configureDashboardBoard;
+window.configureDashboardExchange = DashboardConfig.configureDashboardExchange;
 window.renderDashboardValues = DashboardConfig.renderDashboardValues;
