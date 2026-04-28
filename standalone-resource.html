@@ -196,6 +196,30 @@
             grid-row: 1;
         }
 
+        .approval1 {
+            --accent: var(--blue);
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .approval2 {
+            --accent: var(--purple);
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .approval3 {
+            --accent: var(--sky);
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .proposal {
+            --accent: var(--amber);
+            grid-column: 4 / 6;
+            grid-row: 2;
+        }
+
         .attendance-card,
         .metric-card,
         .proposal-card {
@@ -207,9 +231,8 @@
         .attendance-list,
         .metric-list {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            display: grid;
+            grid-auto-rows: 1fr;
             gap: 0;
             min-height: 0;
             padding-top: clamp(4px, .7vmin, 9px);
@@ -230,9 +253,9 @@
         .metric-row {
             display: grid;
             grid-template-columns: minmax(0, 1fr) auto;
-            align-items: baseline;
+            align-items: center;
             column-gap: clamp(8px, .95vmin, 14px);
-            min-height: clamp(24px, 3vmin, 38px);
+            min-height: 0;
             padding: 0 clamp(2px, .5vmin, 7px);
             border-bottom: 1px solid #e8eef6;
         }
@@ -276,7 +299,9 @@
         }
 
         .metric-list.single {
+            display: flex;
             align-items: center;
+            justify-content: center;
         }
 
         .metric-list.single .metric-row {
@@ -299,30 +324,6 @@
 
         .metric-list.single .metric-row-unit {
             font-size: clamp(13px, 1.55vmin, 20px);
-        }
-
-        .approval1 {
-            --accent: var(--blue);
-            grid-column: 1;
-            grid-row: 2;
-        }
-
-        .approval2 {
-            --accent: var(--purple);
-            grid-column: 2;
-            grid-row: 2;
-        }
-
-        .approval3 {
-            --accent: var(--sky);
-            grid-column: 3;
-            grid-row: 2;
-        }
-
-        .proposal {
-            --accent: var(--amber);
-            grid-column: 4 / 6;
-            grid-row: 2;
         }
 
         .proposal-content {
@@ -478,7 +479,8 @@
             align-items: center;
         }
 
-        .board-title::before {
+        .board-title::before,
+        .exchange-title::before {
             content: "";
             width: clamp(5px, .6vmin, 7px);
             height: clamp(19px, 2.15vmin, 28px);
@@ -488,7 +490,8 @@
             flex: 0 0 auto;
         }
 
-        .board-title:empty::before {
+        .board-title:empty::before,
+        .exchange-title:empty::before {
             display: none;
         }
 
@@ -598,31 +601,6 @@
             white-space: nowrap;
         }
 
-        .exchange-title::before {
-            content: "";
-            width: clamp(5px, .6vmin, 7px);
-            height: clamp(18px, 2vmin, 25px);
-            margin-right: clamp(7px, .8vmin, 10px);
-            border-radius: 999px;
-            background: var(--navy);
-        }
-
-        .exchange-title:empty::before {
-            display: none;
-        }
-
-        .exchange-date {
-            text-align: right;
-            justify-self: end;
-            color: var(--sub);
-            font-size: clamp(9px, .9vmin, 11px);
-            font-weight: 800;
-            line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
         .rate-list {
             display: flex;
             flex-direction: column;
@@ -658,19 +636,23 @@
             font-variant-numeric: tabular-nums;
         }
 
+        .exchange-date,
         .dots {
-            margin-top: auto;
             color: var(--soft);
             font-size: clamp(9px, 1vmin, 12px);
             font-weight: 800;
             text-align: center;
         }
 
-        @media (max-width: 820px), (max-height: 560px) {
-            .page {
-                align-items: flex-start;
-                justify-content: flex-start;
-            }
+        .exchange-date {
+            justify-self: end;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dots {
+            margin-top: auto;
         }
     </style>
 </head>
@@ -710,20 +692,8 @@
                 <div class="card-title"></div>
                 <div class="proposal-content">
                     <div class="proposal-info">
-                        <div class="proposal-stat">
-                            <div class="proposal-stat-label"></div>
-                            <div class="proposal-stat-value">
-                                <span id="proposalTargetCount">0</span>
-                                <em>건</em>
-                            </div>
-                        </div>
-                        <div class="proposal-stat">
-                            <div class="proposal-stat-label"></div>
-                            <div class="proposal-stat-value">
-                                <span id="proposalSubmitCount">0</span>
-                                <em>건</em>
-                            </div>
-                        </div>
+                        <div class="proposal-stat"><div class="proposal-stat-label"></div><div class="proposal-stat-value"><span id="proposalTargetCount">0</span><em>건</em></div></div>
+                        <div class="proposal-stat"><div class="proposal-stat-label"></div><div class="proposal-stat-value"><span id="proposalSubmitCount">0</span><em>건</em></div></div>
                     </div>
                     <div class="proposal-chart-wrap">
                         <div id="proposalDonut" class="proposal-donut">
@@ -737,32 +707,9 @@
                 </div>
             </section>
 
-            <section class="box board notice" data-target="NOTICE">
-                <div class="board-header">
-                    <div class="board-title"></div>
-                    <button type="button" class="board-more" data-click-type="BOARD_MORE_CLICK" data-target="NOTICE">전체보기</button>
-                </div>
-                <div id="noticeList" class="board-list"></div>
-            </section>
-
-            <section class="box board work-request" data-target="WORK_REQUEST">
-                <div class="board-header">
-                    <div class="board-title"></div>
-                    <button type="button" class="board-more" data-click-type="BOARD_MORE_CLICK" data-target="WORK_REQUEST">전체보기</button>
-                </div>
-                <div id="workRequestList" class="board-list"></div>
-            </section>
-
-            <section class="box exchange" data-target="EXCHANGE_RATE">
-                <div class="exchange-inner">
-                    <div class="exchange-top">
-                        <div class="exchange-title"></div>
-                        <div id="exchangeBaseDate" class="exchange-date"></div>
-                    </div>
-                    <div id="exchangeRateList" class="rate-list"></div>
-                    <div class="dots">.....</div>
-                </div>
-            </section>
+            <section class="box board notice" data-target="NOTICE"><div class="board-header"><div class="board-title"></div><button type="button" class="board-more" data-click-type="BOARD_MORE_CLICK" data-target="NOTICE">전체보기</button></div><div id="noticeList" class="board-list"></div></section>
+            <section class="box board work-request" data-target="WORK_REQUEST"><div class="board-header"><div class="board-title"></div><button type="button" class="board-more" data-click-type="BOARD_MORE_CLICK" data-target="WORK_REQUEST">전체보기</button></div><div id="workRequestList" class="board-list"></div></section>
+            <section class="box exchange" data-target="EXCHANGE_RATE"><div class="exchange-inner"><div class="exchange-top"><div class="exchange-title"></div><div id="exchangeBaseDate" class="exchange-date"></div></div><div id="exchangeRateList" class="rate-list"></div><div class="dots">.....</div></div></section>
         </main>
     </div>
 
@@ -772,50 +719,33 @@
                 window.chrome.webview.postMessage(message);
                 return;
             }
-
             console.log(message);
         }
 
-        const dashboardConfig = {
-            approvalItems: [{}, {}, {}]
-        };
+        const dashboardConfig = { approvalItems: [{}, {}, {}] };
 
         document.addEventListener('click', function (e) {
             const actionElement = e.target.closest('[data-click-type]');
-
             if (actionElement) {
                 e.stopPropagation();
-                postMessageToHost({
-                    type: actionElement.dataset.clickType,
-                    target: actionElement.dataset.target || ''
-                });
+                postMessageToHost({ type: actionElement.dataset.clickType, target: actionElement.dataset.target || '' });
                 return;
             }
 
             const targetElement = e.target.closest('[data-target]');
-
             if (targetElement) {
-                postMessageToHost({
-                    type: 'DASHBOARD_BOX_CLICK',
-                    target: targetElement.dataset.target || ''
-                });
+                postMessageToHost({ type: 'DASHBOARD_BOX_CLICK', target: targetElement.dataset.target || '' });
             }
         });
 
         function setText(id, value) {
             const element = document.getElementById(id);
-
-            if (element && value != null) {
-                element.innerText = value;
-            }
+            if (element && value != null) element.innerText = value;
         }
 
         function setTextBySelector(selector, value) {
             const element = document.querySelector(selector);
-
-            if (element && value != null) {
-                element.innerText = value;
-            }
+            if (element && value != null) element.innerText = value;
         }
 
         function escapeHtml(value) {
@@ -830,33 +760,22 @@
         function getField(row, fieldName, fallbackNames) {
             if (!row) return '';
             if (fieldName && row[fieldName] != null) return row[fieldName];
-
             for (const fallbackName of fallbackNames || []) {
                 if (row[fallbackName] != null) return row[fallbackName];
             }
-
             return '';
         }
 
         function formatDate(value) {
             const text = String(value ?? '').trim();
-
-            if (/^\d{8}$/.test(text)) {
-                return text.slice(0, 4) + '-' + text.slice(4, 6) + '-' + text.slice(6, 8);
-            }
-
-            if (text.length >= 10 && text[4] === '-' && text[7] === '-') {
-                return text.slice(0, 10);
-            }
-
+            if (/^\d{8}$/.test(text)) return text.slice(0, 4) + '-' + text.slice(4, 6) + '-' + text.slice(6, 8);
+            if (text.length >= 10 && text[4] === '-' && text[7] === '-') return text.slice(0, 10);
             return text;
         }
 
         function getTodayText() {
             const date = new Date();
-            return date.getFullYear() + '년 '
-                + String(date.getMonth() + 1).padStart(2, '0') + '월'
-                + String(date.getDate()).padStart(2, '0') + '일기준';
+            return date.getFullYear() + '년 ' + String(date.getMonth() + 1).padStart(2, '0') + '월' + String(date.getDate()).padStart(2, '0') + '일기준';
         }
 
         function toNumber(value) {
@@ -872,21 +791,15 @@
         function formatRate(value, unit) {
             const text = String(value ?? '').trim();
             const unitText = String(unit ?? '').trim();
-
             if (!text) return '-';
-
             const number = Number(text.replaceAll(',', ''));
-            const displayValue = !isNaN(number)
-                ? number.toLocaleString(undefined, { maximumFractionDigits: 4 })
-                : text;
-
+            const displayValue = !isNaN(number) ? number.toLocaleString(undefined, { maximumFractionDigits: 4 }) : text;
             return displayValue + (unitText ? ' ' + unitText : '');
         }
 
         function setCiImage(url) {
             const ci = document.querySelector('.ci');
             const image = document.getElementById('ciImage');
-
             if (!ci || !image) return;
 
             image.onload = null;
@@ -895,25 +808,16 @@
             image.removeAttribute('src');
 
             const src = String(url || '').trim();
-
             if (!src) return;
 
-            image.onload = function () {
-                ci.classList.add('has-image');
-            };
-
-            image.onerror = function () {
-                image.removeAttribute('src');
-                ci.classList.remove('has-image');
-            };
-
+            image.onload = function () { ci.classList.add('has-image'); };
+            image.onerror = function () { image.removeAttribute('src'); ci.classList.remove('has-image'); };
             image.src = src;
         }
 
         function getMetricRows(model) {
             const data = model || {};
             const source = data.items ?? data.metrics ?? data.values;
-
             if (Array.isArray(source)) {
                 return source.map(function (item) {
                     return {
@@ -923,12 +827,7 @@
                     };
                 });
             }
-
-            return [{
-                label: data.label ?? data.title ?? '',
-                count: data.count ?? data.Count ?? 0,
-                unit: data.unit ?? data.Unit ?? '건'
-            }];
+            return [{ label: data.label ?? data.title ?? '', count: data.count ?? data.Count ?? 0, unit: data.unit ?? data.Unit ?? '건' }];
         }
 
         function renderMetricList(index, model) {
@@ -937,20 +836,14 @@
 
             const rows = getMetricRows(model);
             const isSingle = rows.length <= 1 && !rows[0].label;
-
             list.className = 'metric-list' + (isSingle ? ' single' : '');
             list.innerHTML = '';
 
             rows.slice(0, 5).forEach(function (row) {
                 const item = document.createElement('div');
                 item.className = 'metric-row';
-                item.innerHTML =
-                    '<div class="metric-label">' + escapeHtml(row.label) + '</div>' +
-                    '<div class="metric-count-wrap">' +
-                        '<span class="metric-count">' + escapeHtml(formatCount(row.count)) + '</span>' +
-                        '<span class="metric-row-unit">' + escapeHtml(row.unit || '건') + '</span>' +
-                    '</div>';
-
+                item.innerHTML = '<div class="metric-label">' + escapeHtml(row.label) + '</div>' +
+                    '<div class="metric-count-wrap"><span class="metric-count">' + escapeHtml(formatCount(row.count)) + '</span><span class="metric-row-unit">' + escapeHtml(row.unit || '건') + '</span></div>';
                 list.appendChild(item);
             });
         }
@@ -958,15 +851,12 @@
         function applyStaticText() {
             setText('ciTitle', dashboardConfig.ciTitle || '');
             setCiImage(dashboardConfig.ciImageUrl);
-
             setTextBySelector('.attendance .card-title', dashboardConfig.attendanceTitle);
             setTextBySelector('.attendance .card-foot', getTodayText());
-
             for (let i = 0; i < 3; i++) {
                 setText('approvalTitle' + (i + 1), dashboardConfig.approvalItems[i].title || '');
                 setText('approvalFoot' + (i + 1), dashboardConfig.approvalItems[i].foot || '');
             }
-
             setTextBySelector('.proposal .card-title', dashboardConfig.proposalTitle);
             setTextBySelector('.proposal-stat:nth-child(1) .proposal-stat-label', dashboardConfig.proposalTargetLabel);
             setTextBySelector('.proposal-stat:nth-child(2) .proposal-stat-label', dashboardConfig.proposalSubmitLabel);
@@ -975,22 +865,18 @@
             setTextBySelector('.exchange-title', dashboardConfig.exchangeTitle);
         }
 
+        function hasMetricValue(model) {
+            return model && (model.items || model.metrics || model.values || model.count != null);
+        }
+
         function configureDashboard(model) {
             Object.assign(dashboardConfig, model || {});
-
             if (model && Array.isArray(model.approvalItems)) {
                 for (let i = 0; i < Math.min(3, model.approvalItems.length); i++) {
-                    dashboardConfig.approvalItems[i] = Object.assign(
-                        dashboardConfig.approvalItems[i],
-                        model.approvalItems[i]
-                    );
-
-                    if (hasMetricValue(model.approvalItems[i])) {
-                        renderMetricList(i + 1, model.approvalItems[i]);
-                    }
+                    dashboardConfig.approvalItems[i] = Object.assign(dashboardConfig.approvalItems[i], model.approvalItems[i]);
+                    if (hasMetricValue(model.approvalItems[i])) renderMetricList(i + 1, model.approvalItems[i]);
                 }
             }
-
             applyStaticText();
         }
 
@@ -1010,25 +896,16 @@
             if (Array.isArray(indexOrItems)) {
                 for (let i = 0; i < Math.min(3, indexOrItems.length); i++) {
                     dashboardConfig.approvalItems[i] = Object.assign(dashboardConfig.approvalItems[i], indexOrItems[i]);
-
-                    if (hasMetricValue(indexOrItems[i])) {
-                        renderMetricList(i + 1, indexOrItems[i]);
-                    }
+                    if (hasMetricValue(indexOrItems[i])) renderMetricList(i + 1, indexOrItems[i]);
                 }
-
                 applyStaticText();
                 return;
             }
 
             const index = Number(indexOrItems) - 1;
             if (index < 0 || index > 2) return;
-
             dashboardConfig.approvalItems[index] = Object.assign(dashboardConfig.approvalItems[index], model || {});
-
-            if (model && hasMetricValue(model)) {
-                renderMetricList(index + 1, model);
-            }
-
+            if (hasMetricValue(model)) renderMetricList(index + 1, model);
             applyStaticText();
         }
 
@@ -1042,25 +919,14 @@
 
         function configureDashboardBoard(type, model) {
             type = String(type || '').toUpperCase();
-
-            if (type === 'NOTICE') {
-                dashboardConfig.noticeTitle = model?.title ?? dashboardConfig.noticeTitle;
-            }
-
-            if (type === 'WORK_REQUEST') {
-                dashboardConfig.workRequestTitle = model?.title ?? dashboardConfig.workRequestTitle;
-            }
-
+            if (type === 'NOTICE') dashboardConfig.noticeTitle = model?.title ?? dashboardConfig.noticeTitle;
+            if (type === 'WORK_REQUEST') dashboardConfig.workRequestTitle = model?.title ?? dashboardConfig.workRequestTitle;
             applyStaticText();
         }
 
         function configureDashboardExchange(model) {
             dashboardConfig.exchangeTitle = model?.exchangeTitle ?? model?.title ?? dashboardConfig.exchangeTitle;
             applyStaticText();
-        }
-
-        function hasMetricValue(model) {
-            return model.items || model.metrics || model.values || model.count != null;
         }
 
         function renderDashboardApproval(index, model) {
@@ -1071,26 +937,15 @@
 
         function renderDashboardAttendance(model) {
             model = model || {};
-            const fieldMap = model.fieldMap ?? model.attendanceFieldMap ?? {
-                name: 'GUBUNNM',
-                count: 'CNT',
-                unit: 'UNIT'
-            };
+            const fieldMap = model.fieldMap ?? model.attendanceFieldMap ?? { name: 'GUBUNNM', count: 'CNT', unit: 'UNIT' };
             const rows = model.items ?? model.attendanceItems ?? [];
             const list = document.getElementById('attendanceList');
-
             list.innerHTML = '';
-
             rows.forEach(function (row) {
                 const item = document.createElement('div');
                 item.className = 'attendance-row';
-                item.innerHTML =
-                    '<div class="attendance-name">' + escapeHtml(getField(row, fieldMap.name, ['name', 'Name', 'GUBUNNM'])) + '</div>' +
-                    '<div class="attendance-count-wrap">' +
-                        '<span class="attendance-count">' + escapeHtml(formatCount(getField(row, fieldMap.count, ['count', 'Count', 'CNT']))) + '</span>' +
-                        '<span class="attendance-unit">' + escapeHtml(getField(row, fieldMap.unit, ['unit', 'Unit', 'UNIT']) || '건') + '</span>' +
-                    '</div>';
-
+                item.innerHTML = '<div class="attendance-name">' + escapeHtml(getField(row, fieldMap.name, ['name', 'Name', 'GUBUNNM'])) + '</div>' +
+                    '<div class="attendance-count-wrap"><span class="attendance-count">' + escapeHtml(formatCount(getField(row, fieldMap.count, ['count', 'Count', 'CNT']))) + '</span><span class="attendance-unit">' + escapeHtml(getField(row, fieldMap.unit, ['unit', 'Unit', 'UNIT']) || '건') + '</span></div>';
                 list.appendChild(item);
             });
         }
@@ -1100,114 +955,60 @@
             const target = toNumber(model.targetCount ?? model.proposalTargetCount);
             const submit = toNumber(model.submitCount ?? model.proposalSubmitCount);
             const percent = target > 0 ? submit / target * 100 : 0;
-
             setText('proposalTargetCount', target);
             setText('proposalSubmitCount', submit);
             setText('proposalPercent', Math.round(percent) + '%');
             setText('proposalRatio', submit + ' / ' + target);
-
             const donut = document.getElementById('proposalDonut');
-            if (donut) {
-                donut.style.setProperty('--rate', Math.max(0, Math.min(percent, 100)) + '%');
-            }
+            if (donut) donut.style.setProperty('--rate', Math.max(0, Math.min(percent, 100)) + '%');
         }
 
         function renderDashboardBoard(type, model) {
             type = String(type || '').toUpperCase();
             model = model || {};
-
             const listId = type === 'WORK_REQUEST' ? 'workRequestList' : 'noticeList';
             const messageType = type === 'WORK_REQUEST' ? 'WORK_REQUEST_DETAIL' : 'NOTICE_DETAIL';
-            const fieldMap = model.fieldMap ?? {
-                key: type === 'WORK_REQUEST' ? 'REQNO' : 'SEQ',
-                title: 'TITLE',
-                writer: 'WRITER',
-                date: type === 'WORK_REQUEST' ? 'REQDT' : 'WRTDT'
-            };
+            const fieldMap = model.fieldMap ?? { key: type === 'WORK_REQUEST' ? 'REQNO' : 'SEQ', title: 'TITLE', writer: 'WRITER', date: type === 'WORK_REQUEST' ? 'REQDT' : 'WRTDT' };
             const rows = model.items ?? [];
             const list = document.getElementById(listId);
-
             list.innerHTML = '';
-
             rows.forEach(function (row) {
                 const key = getField(row, fieldMap.key, ['key', 'Key', 'SEQ', 'REQNO']);
                 const title = getField(row, fieldMap.title, ['title', 'Title', 'TITLE', 'SUBJECT']) || '(제목 없음)';
                 const writer = getField(row, fieldMap.writer, ['writer', 'Writer', 'WRITER', 'USERNM']);
                 const date = formatDate(getField(row, fieldMap.date, ['date', 'Date', 'WRTDT', 'REQDT', 'REGDT']));
                 const item = document.createElement('div');
-
                 item.className = 'board-row';
                 item.title = writer ? title + ' / ' + writer : title;
-                item.onclick = function (e) {
-                    e.stopPropagation();
-                    postMessageToHost({ type: messageType, key, title, writer, date, row });
-                };
-                item.innerHTML =
-                    '<div class="board-row-title">' + escapeHtml(title) + '</div>' +
-                    '<div class="board-row-date">' + escapeHtml(date) + '</div>';
-
+                item.onclick = function (e) { e.stopPropagation(); postMessageToHost({ 입력: messageType, key, title, writer, date, row }); };
+                item.innerHTML = '<div class="board-row-title">' + escapeHtml(title) + '</div><div class="board-row-date">' + escapeHtml(date) + '</div>';
                 list.appendChild(item);
             });
         }
 
         function renderDashboardExchange(model) {
             model = model || {};
-            const fieldMap = model.fieldMap ?? {
-                name: 'CURRNM',
-                value: 'RATE',
-                unit: 'UNIT',
-                date: 'BASISDT'
-            };
+            const fieldMap = model.fieldMap ?? { name: 'CURRNM', value: 'RATE', unit: 'UNIT', date: 'BASISDT' };
             const rows = model.items ?? [];
             const list = document.getElementById('exchangeRateList');
-
             list.innerHTML = '';
             setText('exchangeBaseDate', getTodayText());
-
             rows.slice(0, 4).forEach(function (row) {
                 const item = document.createElement('div');
-                item.innerHTML =
-                    '<span class="rate-name">' + escapeHtml(getField(row, fieldMap.name, ['name', 'Name', 'CURRNM'])) + '</span>' +
-                    '<span class="rate-value">' + escapeHtml(formatRate(
-                        getField(row, fieldMap.value, ['value', 'Value', 'RATE']),
-                        getField(row, fieldMap.unit, ['unit', 'Unit', 'UNIT'])
-                    )) + '</span>';
-
+                item.innerHTML = '<span class="rate-name">' + escapeHtml(getField(row, fieldMap.name, ['name', 'Name', 'CURRNM'])) + '</span>' +
+                    '<span class="rate-value">' + escapeHtml(formatRate(getField(row, fieldMap.value, ['value', 'Value', 'RATE']), getField(row, fieldMap.unit, ['unit', 'Unit', 'UNIT']))) + '</span>';
                 list.appendChild(item);
             });
         }
 
         function renderDashboardValues(model) {
             model = model || {};
-
-            renderDashboardAttendance({
-                fieldMap: model.attendanceFieldMap,
-                items: model.attendanceItems || []
-            });
-
-            (model.approvalItems || []).forEach(function (item, index) {
-                renderDashboardApproval(index + 1, item);
-            });
-
-            renderDashboardProposal({
-                targetCount: model.proposalTargetCount,
-                submitCount: model.proposalSubmitCount
-            });
-
-            renderDashboardBoard('NOTICE', {
-                fieldMap: model.noticeFieldMap,
-                items: model.notices || []
-            });
-
-            renderDashboardBoard('WORK_REQUEST', {
-                fieldMap: model.workRequestFieldMap,
-                items: model.workRequests || []
-            });
-
-            renderDashboardExchange({
-                fieldMap: model.exchangeFieldMap,
-                items: model.exchangeRates || []
-            });
+            renderDashboardAttendance({ fieldMap: model.attendanceFieldMap, items: model.attendanceItems || [] });
+            (model.approvalItems || []).forEach(function (item, index) { renderDashboardApproval(index + 1, item); });
+            renderDashboardProposal({ targetCount: model.proposalTargetCount, submitCount: model.proposalSubmitCount });
+            renderDashboardBoard('NOTICE', { fieldMap: model.noticeFieldMap, items: model.notices || [] });
+            renderDashboardBoard('WORK_REQUEST', { fieldMap: model.workRequestFieldMap, items: model.workRequests || [] });
+            renderDashboardExchange({ fieldMap: model.exchangeFieldMap, items: model.exchangeRates || [] });
         }
 
         window.configureDashboard = configureDashboard;
