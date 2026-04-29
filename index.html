@@ -14,42 +14,35 @@
                 예: data-target="REQUEST" → target == "REQUEST"
                 값을 바꾸면 C# switch문도 같이 수정해야 합니다.
             -->
-            <!-- 상단 CI / 배경 이미지 영역 -->
             <section class="box ci" data-target="CI">
                 <img id="ciImage" class="ci-image" alt="CI" />
                 <div id="ciTitle" class="ci-title"></div>
             </section>
 
-            <!-- 근태현황 카드 -->
             <section class="box attendance-card attendance" data-target="ATTENDANCE">
                 <div class="card-title"></div>
                 <div id="attendanceList" class="attendance-list"></div>
                 <div class="card-foot"></div>
             </section>
 
-            <!-- 결재 카드 1: 예) 미결재 -->
             <section class="box metric-card approval1" data-target="APPROVAL_1">
                 <div id="approvalTitle1" class="card-title"></div>
                 <div id="approvalList1" class="metric-list single"></div>
                 <div id="approvalFoot1" class="card-foot"></div>
             </section>
 
-            <!-- 결재 카드 2: 예) 기결재 -->
             <section class="box metric-card approval2" data-target="APPROVAL_2">
                 <div id="approvalTitle2" class="card-title"></div>
                 <div id="approvalList2" class="metric-list single"></div>
                 <div id="approvalFoot2" class="card-foot"></div>
             </section>
 
-            <!-- 결재 카드 3: 예) 참조 -->
             <section class="box metric-card approval3" data-target="APPROVAL_3">
                 <div id="approvalTitle3" class="card-title"></div>
                 <div id="approvalList3" class="metric-list single"></div>
                 <div id="approvalFoot3" class="card-foot"></div>
             </section>
 
-            <!-- 제안 카드: 목표/제출 + 도넛 차트
-                 chartLabel은 도넛 중앙 라벨이며, C#에서 chartLabel을 넘긴 경우만 표시됩니다. -->
             <section class="box proposal-card proposal" data-target="PROPOSAL">
                 <div class="card-title"></div>
                 <div class="proposal-content">
@@ -82,7 +75,6 @@
                 <div class="card-foot proposal-foot"></div>
             </section>
 
-            <!-- 공지사항 카드 -->
             <section class="box board notice" data-target="NOTICE">
                 <div class="board-header">
                     <div class="board-title"></div>
@@ -92,7 +84,6 @@
                 <div id="noticeFoot" class="board-foot card-foot"></div>
             </section>
 
-            <!-- 업무지시요청 카드 -->
             <section class="box board work-request" data-target="REQUEST">
                 <div class="board-header">
                     <div class="board-title"></div>
@@ -102,7 +93,6 @@
                 <div id="workRequestFoot" class="board-foot card-foot"></div>
             </section>
 
-            <!-- 환율 카드 -->
             <section class="box exchange" data-target="EXCHANGE_RATE">
                 <div class="exchange-inner">
                     <div class="exchange-top">
@@ -116,8 +106,8 @@
         </main>
     </div>
 
-    
-<script src="js/dashboard-app.js"></script>
-<script src="js/sample-data.js"></script>
+    <script src="js/dashboard-app.js"></script>
+    <script src="js/dashboard-fix.js"></script>
+    <script src="js/sample-data.js"></script>
 </body>
 </html>
